@@ -1,16 +1,21 @@
 import React, { useEffect } from "react";
 import api from "./api";
+import { Outlet, Route, Routes } from "react-router-dom";
+import Layout from "./components/Layout";
+import Home from "./pages/Home";
 
 function App() {
-  useEffect(() => {
-    async function fetchData() {
-      let res = await api.getMovie({ s: "social" });
-      console.log(res.Search);
-    }
-    fetchData()
-  }, []);
   
-  return <div>App</div>;
+
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+        </Route>
+      </Routes>
+    </>
+  );
 }
 
 export default App;
