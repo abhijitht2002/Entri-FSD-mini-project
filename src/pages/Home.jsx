@@ -6,22 +6,37 @@ function Home() {
   const [movieData, setMovieData] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalpages] = useState(0);
+  const [keyword, setKeyword] = useState("");
+
+  async function fetchData() {
+    if (!keyword) return;
+
+    let res = await api.getMovie({ s: keyword, page });
+
+    console.log(res.Search);
+    setMovieData(res?.Search || []);
+    setTotalpages(Math.ceil(res.totalResults / 10));
+  }
 
   useEffect(() => {
-    async function fetchData() {
-      let res = await api.getMovie({ s: "The a", page: page });
-      console.log(res.Search);
-      setMovieData(res?.Search);
-      setTotalpages(Math.ceil(res.totalResults / 10));
-    }
     fetchData();
   }, [page]);
 
   console.log("movie data: ", movieData);
 
+  const handleSearch = () => {
+    setPage(1)
+    fetchData()
+  }
+
   return (
     <>
-      <div className="">
+      <div>
+        <input type="text" placeholder="search....." onChange={(e)=>setKeyword(e.target.value)}/>{" "}
+        <button onClick={() => {handleSearch()}}>Search</button>
+      </div>
+
+      <div className="grid grid-cols-4">
         {movieData.length > 0 ? (
           movieData.map((item, index) => <Card movieData={item} />)
         ) : (
